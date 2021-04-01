@@ -1,0 +1,146 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!--  This file has been downloaded from bootdey.com    @bootdey on twitter -->
+    <!--  All snippets are MIT license http://bootdey.com/license -->
+    <title>Teachers Directory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static '/css/index.css' %}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7411fe3943.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="content">
+        <div class="container">
+
+            <div class="row" id="app-head">
+                <div class="mg-10" id="filterFormDiv">
+                    <form action="" method="post"  accept-charset="utf-8"
+                        class="mg-10 form-inline">
+                        {% csrf_token %}
+                    
+                        <div class="form-group form-search">
+                            <input type="text" value="" name="lastname"
+                                class="form-control" placeholder="Search" />
+                        </div>
+                        <div class="form-group">
+                            <select name="subject" id="sub-selector" class="form-control" >
+                                
+                                <option value="" selected>Filter by subject</option>
+                                {% for subject in subjects %}
+                                {% if selected_sub == subject %}
+                                <option value="{{subject.id}}" selected>{{subject.name}}</option>
+                                {% else %}
+                                <option value="{{subject.id}}">{{subject.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+                    <!-- container text-right -->
+                <div class="mg-10" id="buttonsDiv">
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'importdata:clear-db'%}" method="POST"
+                            class="btn btn-danger mg-10" style="padding: 0px; border:0px">
+                            {% csrf_token %}
+                            <button class="btn btn-danger mg-10">
+                                <i class="fas fa-trash"> Clear Database</i>
+                            </button>
+                        </form>
+                        <a href="{% url 'importdata:import-data'%}" class="btn btn-success mg-10">
+                            <i class="fas fa-file-upload"> Import File</i>
+                        </a>
+                        
+                        <a href="{% url 'authz:logout' %}" class="btn btn-danger mg-10">
+                            <i class="fas fa-sign-out-alt"> Log out</i>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'authz:login' %}" class="btn btn-success mg-10">
+                            <i class="fas fa-sign-in-alt"> Log in</i>
+                        </a>
+                    {% endif %}
+                
+                
+                <!-- end col -->
+                </div>
+            </div>
+            <!-- end row-->
+        </div>
+            <div class="container">
+            {% if teachers|length > 0 %}
+                <div class="row">
+                    {% for teacher in teachers %}
+                        <div class="col-lg-3">
+                            <div class="text-center card-box">
+                                <div class="member-card pt-2 pb-2">
+                                    <div class="thumb-lg member-thumb mx-auto">
+                                    <img src="{{MEDIA_URL}}/{{teacher.pic_url}}" class="rounded-circle img-thumbnail"
+                                        onerror='this.onerror=null; this.src="https://bootdey.com/img/Content/avatar/avatar7.png";'
+                                            alt="{{teacher.firstname}}'s photo"></div>
+                                    <div class="">
+                                        <h4>{{teacher.firstname}} {{teacher.lastname}}</h4>
+                                        <p class="text-muted">email <span>: </span><span><a href="mailto:{{teacher.email}}"
+                                                    class="text-pink">{{teacher.email}}</a></span></p>
+                                    </div>
+                                    <div >
+                                        {% for recordPair in subjectTaughtBy %}
+                                            {% if recordPair.teacher == teacher %}
+                                                <span class="badge badge-light">{{recordPair.subject.name}}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    
+                                        <!-- <span class="badge badge-light">Subject2</span>
+                                        <span class="badge badge-light">Subject3</span> -->
+                                    </div>
+                                    <a href="{% url 'teachers:teacher-profile' teacherID=teacher.id%}"
+                                        class="btn btn-primary mt-3 btn-rounded waves-effect w-md waves-light">
+                                        View Profile
+                                    </a>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    {% endfor %}
+                </div>
+                <!-- end row -->
+
+                {% else %}
+                    <div class="alert alert-danger" role="alert" style="text-align: center;">
+                        There is no teachers! Please import teacher file.
+                    </div>
+                {% endif %}
+                
+                {% for msg in messages %}
+                
+                <div class="alert alert-info" role="alert" style="text-align: center;">
+                {% if 'safe' in msg.tags %}{{ message|safe }}{% else %}{{ msg }}{% endif %}
+                </div>
+                {% endfor %}
+                
+            
+            
+            
+        </div>
+        <!-- container -->
+    </div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</body>
+
+</html>
