@@ -132,3 +132,8 @@ h5 {
 .modal-header {
     border-width: 0;
 }
+
+#msg-box {
+    position: absolute;
+    top: 65%;
+}
