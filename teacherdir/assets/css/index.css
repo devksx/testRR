@@ -49,3 +49,14 @@ h4 {
 	line-height: 22px;
 	font-size: 18px;
 }
+#app-head {
+	position: relative;
+}
+#filterFormDiv {
+	padding-left: 15px;
+	padding-bottom: 15px;
+}
+#buttonsDiv {
+	position: absolute;
+	right: 15px;
+}

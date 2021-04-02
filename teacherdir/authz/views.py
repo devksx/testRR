@@ -14,22 +14,24 @@ class Login(View):
         email = request.POST['email']
         password = request.POST['password']
         try:
-        	username = User.objects.get(email=email.lower()).username
+            username = User.objects.get(email=email.lower()).username
 
-	        user = auth.authenticate(username=username, password=password)
+            user = auth.authenticate(username=username, password=password)
 
-	        if user is not None:
-	            auth.login(request, user)
-	            print("logged in ")
-	            if request.GET.get('next', "") != "":
-	                return redirect(request.GET['next'])
-	            return redirect(reverse('teachers:home'))
-	        else:
-	            messages.info(request, "invalid credentials")
-	            return redirect(reverse('authz:login'))
-	    except Exception:
-	    	messages.info(request, "user does not exists")
-	        return redirect(reverse('authz:login'))
+            if user is not None:
+                auth.login(request, user)
+                # print("logged in ")
+                if request.GET.get('next', "") != "":
+                    return redirect(request.GET['next'])
+                return redirect(reverse('teachers:home'))
+            else:
+                messages.info(request, "invalid credentials")
+                return redirect(reverse('authz:login'))
+
+        except Exception as ex:
+            print(ex.__class__)
+            messages.error(request, "email does not exists")
+            return redirect(reverse('authz:login'))
 
 
 def logout(request):

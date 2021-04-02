@@ -23,6 +23,10 @@ class ImportData(View):
         csv_file = request.FILES.get('csv-file')
         pics_file = request.FILES.get('pics-file')
 
+        if csv_file != None and not csv_file.name.endswith('.csv'):
+            messages.error(request, "Please provide CSV file of records")
+            return redirect(reverse('importdata:import-data'))
+
         if csv_file != None and csv_file.name.endswith('.csv'):
 
             teacherFile = TeachersFile(csvFile=csv_file, user=request.user)
@@ -77,17 +81,21 @@ class ImportData(View):
                     teacherFile.delete()
                     return redirect(reverse('importdata:import-data'))
 
-                messages.info(request, "file successfully imported!")
+                messages.info(request, "CSV file successfully imported!")
             teacherFile.delete()
 
+        if pics_file != None and not pics_file.name.endswith('.zip'):
+            messages.error(request, "Please provide ZIP file for Pictures")
+            return redirect(reverse('importdata:import-data'))
+
         if pics_file != None and pics_file.name.endswith('.zip'):
-            print(pics_file.name)
+            # print(pics_file.name)
             zipProfileFile = ZipProfileFile.objects.create(
                 picZipFile=pics_file)
             zipProfileFile.save()
             with ZipFile(zipProfileFile.picZipFile.path, 'r') as zipFileObj:
                 zipFileObj.extractall('media/')
-
+            messages.info(request, "Pics file successfully imported!")
             zipProfileFile.delete()
 
         return redirect(reverse('importdata:import-data'))
