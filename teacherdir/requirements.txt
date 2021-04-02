@@ -1,2 +1,2 @@
-django-admin>=3
+django-admin
 django
