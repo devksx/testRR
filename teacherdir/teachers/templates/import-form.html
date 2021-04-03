@@ -48,20 +48,21 @@
                 <div class="modal-footer">
                     <div class="col-md-12">
                         {% for msg in messages %}
+                        
                         <span class="alert alert-info pull-left" role="alert" style="text-align: center; padding:5px">
                             {% if 'safe' in msg.tags %}{{ message|safe }}{% else %}{{ msg }}{% endif %}
                         </span>
                         {% endfor %}
                         <button class="btn"
-                            onclick="location.href = '/' ">Cancel</button>
+                            onclick='location.href = "/";'>Cancel</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="msg-box" class="modal show">
-        <div class="modal-dialog modal-content">
+    <div id="msg-div" class="modal show">
+        <div id="msg-content" class="modal-dialog modal-content">
             <div class="modal-body">
                 <div class="form-group">
                     If you don't have any files to upload, get sample files hosted on
@@ -72,9 +73,7 @@
     </div>
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-
-    </script>
+    
 </body>
 
 </html>

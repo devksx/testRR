@@ -7,6 +7,9 @@ from teachers.models import Teacher, Subject, SubjectTaughtBy
 from django.db.utils import IntegrityError
 from django.contrib import messages
 import csv
+import os
+from os.path import isfile, join
+from os import listdir
 from zipfile import ZipFile
 # Create your views here.
 
@@ -65,7 +68,7 @@ class ImportData(View):
                                     continue
 
                             if line['Profile picture'] != '':
-                                current_teacher.pic_url = line['Profile picture']
+                                current_teacher.image_url = line['Profile picture']
 
                             if line['Phone Number'] != '':
                                 current_teacher.phoneNum = line['Phone Number']
@@ -93,8 +96,22 @@ class ImportData(View):
             zipProfileFile = ZipProfileFile.objects.create(
                 picZipFile=pics_file)
             zipProfileFile.save()
+            mediaPath = "media/"
             with ZipFile(zipProfileFile.picZipFile.path, 'r') as zipFileObj:
-                zipFileObj.extractall('media/')
+                # print(zipFileObj.printdir())
+                zipFileObj.extractall(mediaPath)
+
+            all_images = [f for f in listdir(mediaPath) if isfile(
+                join(mediaPath, f))]
+            for img in all_images:
+                # print(img, type(img))
+                try:
+                    teacher = Teacher.objects.get(image_url=img)
+                    teacher.image = img
+                    teacher.save()
+                except Exception as e:
+                    # print("!!!!!!!!!", e.__class__)
+                    continue
             messages.info(request, "Pics file successfully imported!")
             zipProfileFile.delete()
 
